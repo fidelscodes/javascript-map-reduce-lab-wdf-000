@@ -9000,3 +9000,33 @@ const issues = [
     "url": "https://api.github.com/repos/learn-co-curriculum/js-donut-lab/issues/2"
   }
 ];
+
+let issuesWithUpdatedApiUrl = issues.map(issue => {
+  let issueCopy = Object.assign({}, issue);
+  issueCopy.url = issue.url.replace('api', 'api-v2');
+  return issueCopy;
+});
+
+let commentCountAcrossIssues = issues.map(issue => issue.comments_count)
+  .reduce((prev, current) => prev + current, 0);
+
+let openIssues = issues.map(issue => {
+  if (issue.state === 'open') {
+    return issue;
+  }
+}).filter(elem => elem); // get rid of falsey values. Alternative to using reduce
+
+let nonAutomaticIssues = issues.reduce((result, issue) => {
+  if (!issue.body.includes('by learn.co')) {
+    result.push(issue);
+  }
+  return result;
+}, []);
+
+// adding table rows to table
+let tableRowsHTML = nonAutomaticIssues.map(issue => {
+  let html = `<tr><td>${issue.body}</td><td>${issue.created_at}</td><td>${issue.state}</td></tr>`;
+  return html;
+}).join();
+
+document.getElementById('results').innerHTML = tableRowsHTML;
